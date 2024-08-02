@@ -13,7 +13,7 @@ https://github.com/SashaGoncharov19/pavukrp-gamemode
     */
 try {
     //Евенты сервера
-    require("./events/events.js");
+    require("./events/events");
     require("./events/mission");
 
     //Команды сервер
@@ -28,9 +28,6 @@ try {
     // require("./utilities/items"); // Предметы
     // require("./utilities/death"); // Система смерти
     // require("./utilities/zones"); // Зеленые зоны
-
-    global.browser = mp.browsers.new("package://browser/index.html");
-    global.player = mp.players.local;
 
     //Загружаем главные компоненты сервера
     require("./system/DB.js");

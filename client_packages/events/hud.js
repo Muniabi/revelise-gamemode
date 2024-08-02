@@ -55,10 +55,7 @@ mp.events.add("render", () => {
     // }
     mp.game.vehicle.setExperimentalAttachmentSyncEnabled(true);
     // Hide default hud component
-    mp.discord.update(
-        "Играет на Rewelise RP",
-        "Пространствует по штату stage"
-    );
+    mp.discord.update("Пространствует по штату", "Rewelise RP");
     //
     mp.game.audio.setRadioToStationName("OFF");
     mp.game.audio.setUserRadioControlEnabled(false);

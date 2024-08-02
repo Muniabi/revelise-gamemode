@@ -5,6 +5,7 @@ var HUD = new Vue({
         server: {
             online: 99,
             login: "daun",
+            id: 0, // Добавлено поле для хранения ID игрока
             time: "1",
             date: "",
         },
@@ -112,6 +113,13 @@ var HUD = new Vue({
     },
 });
 
+// Добавьте этот обработчик для обновления ID
+mp.events.add("HUD_setPlayerId::CEF", (playerId) => {
+    console.log("Received playerId:", playerId); // Отладочное сообщение
+    HUD.server.id = playerId;
+});
+
+// Пример других событий
 mp.events.add("HUD_updateLocation::CEF", (top, left, location, zone) => {
     HUD.locationPosition.top = top;
     HUD.locationPosition.left = left;
