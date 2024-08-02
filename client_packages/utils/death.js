@@ -1,4 +1,4 @@
-mp.events.add('playerDeath', () => {
+mp.events.add("playerDeath", () => {
     mp.players.local.freezePosition(true);
 
     setTimeout(() => {
@@ -6,8 +6,4 @@ mp.events.add('playerDeath', () => {
     }, 1000);
 });
 
-
-mp.events.add('PhoneAnimShow', () => {
-
-});
-
+mp.events.add("PhoneAnimShow", () => {});

@@ -23,6 +23,7 @@ require("./admin/inv");
 require("./events/rent");
 require("./events/lsc");
 require("./events/mission");
+require("./events/hud");
 
 // Utils
 // require("./utils/3dCamera");
@@ -34,3 +35,6 @@ require("./utils/other");
 //
 
 // require("accounts");
+
+global.browser = mp.browsers.new("package://browser/index.html");
+global.player = mp.players.local;
