@@ -21,7 +21,9 @@ mp.events.add("playerJoin", (player) => {
     if (!player.customData) {
         player.customData = {};
     }
-    player.customData.isGodMode = false; // По умолчанию режим бессмертия отключен
+    player.customData.isGodMode = false; // По умолчанию режим бессмертия отключен\
+    // При подключении игрока отправляем его ID на клиент
+    player.call("HUD_setPlayerId::CEF", [player.id]);
 });
 
 // КОМАНДА ДЛЯ РЕСТАРТА СЕРВЕРА
@@ -80,6 +82,40 @@ mp.events.addCommand("setw", (player, _, weather) => {
 mp.events.addCommand("pos", (player) => {
     player.outputChatBox(`${player.position}`);
     console.log(`<LOG> ${player.position}`);
+});
+
+// Проверка, является ли игрок администратором
+function isAdmin(player) {
+    // Здесь ваша логика проверки администраторских прав
+    // Например:
+    return player.getVariable("isAdmin") === true;
+}
+
+// Команда для вывода информации об игроках
+mp.events.addCommand("players", (player) => {
+    if (!isAdmin(player)) {
+        player.outputChatBox("У вас нет прав для использования этой команды.");
+        return;
+    }
+
+    // Получаем всех игроков на сервере
+    let players = mp.players.toArray();
+
+    // Создаем сообщение с информацией об игроках
+    let message = "Игроки на сервере:\n";
+
+    // Проверяем, есть ли игроки на сервере
+    if (players.length === 0) {
+        message = "На сервере нет игроков.";
+    } else {
+        // Проходимся по всем игрокам и добавляем их информацию в сообщение
+        players.forEach((p) => {
+            message += `ID: ${p.id}, Имя: ${p.name}\n`;
+        });
+    }
+
+    // Отправляем сообщение только администратору
+    player.call("Hud_addString::CEF", [message]);
 });
 
 //Команда суицида
@@ -176,10 +212,10 @@ mp.events.add("setPlayerInvincible", (player, state) => {
 //     player.notify("~g~ Заспавенно!");
 // });
 
-//Команда спавна автомобиля /veh carname (/veh neon)
+// Команда спавна автомобиля /veh carname (/veh neon)
 mp.events.addCommand("veh", (player, _, veh, color1, color2) => {
     // Проверка на наличие модели автомобиля
-    if (veh == undefined || veh.trim().length === 0) {
+    if (!veh || veh.trim().length === 0) {
         return player.outputChatBox("/veh [model] [color1] [color2]");
     }
 
@@ -201,53 +237,49 @@ mp.events.addCommand("veh", (player, _, veh, color1, color2) => {
         player.customData.vehicle.destroy(); // Удаление старого транспортного средства
     }
 
-    // Создание нового транспортного средства
-    var adminVeh = mp.vehicles.new(mp.joaat(veh), pos, {
-        heading: 0,
-        engine: false,
-        locked: false,
-        numberPlate: "ADMIN",
-        color: [
-            [0, 0, 0],
-            [0, 0, 0],
-        ], // Цвета будут изменены ниже
-    });
+    // Попытка создания нового транспортного средства
+    try {
+        var adminVeh = mp.vehicles.new(mp.joaat(veh), pos, {
+            heading: 0,
+            engine: false,
+            locked: false,
+            numberPlate: "ADMIN",
+            color: [
+                [0, 0, 0],
+                [0, 0, 0],
+            ], // Цвета будут изменены ниже
+        });
 
-    // Установка цвета автомобиля
-    adminVeh.setColor(colorPrimary, colorSecondary);
+        // Установка цвета автомобиля
+        adminVeh.setColor(colorPrimary, colorSecondary);
 
-    // Дополнительные настройки автомобиля
-    adminVeh.setMod(53, 1); // Номерной знак
+        // Дополнительные настройки автомобиля
+        adminVeh.setMod(53, 1); // Номерной знак
+        adminVeh.setMod(11, 3); // Уровень улучшения двигателя (максимальный)
+        adminVeh.setMod(18, 0); // Включение турбонаддува
+        adminVeh.setMod(13, 2); // Уровень улучшения трансмиссии (максимальный)
+        adminVeh.setMod(12, 2); // Уровень улучшения тормозов (максимальный)
+        adminVeh.setMod(15, 3); // Уровень улучшения подвески (максимальный)
+        adminVeh.setMod(46, 2); // Тонировка (-1 to 2)
+        adminVeh.numberPlate = " ADMIN "; // Установка текста номерного знака
 
-    // Максимальное улучшение двигателя
-    adminVeh.setMod(11, 3); // Уровень улучшения двигателя (максимальный)
+        // Сохранение нового транспортного средства в customData
+        player.customData.vehicle = adminVeh;
 
-    // Турбонаддув
-    adminVeh.setMod(18, 0); // Включение турбонаддува
+        // Посадка игрока в автомобиль (на водительское место)
+        setTimeout(() => {
+            player.putIntoVehicle(adminVeh, 0);
+        }, 150);
 
-    // Улучшение трансмиссии
-    adminVeh.setMod(13, 2); // Уровень улучшения трансмиссии (максимальный)
-
-    // Улучшение тормозов
-    adminVeh.setMod(12, 2); // Уровень улучшения тормозов (максимальный)
-
-    // Улучшение подвески
-    adminVeh.setMod(15, 3); // Уровень улучшения подвески (максимальный)
-
-    adminVeh.setMod(46, 2); // Тонировка (-1 to 2)
-
-    adminVeh.numberPlate = " ADMIN "; // Установка текста номерного знака и типа (если API позволяет)
-
-    // Сохранение нового транспортного средства в customData
-    player.customData.vehicle = adminVeh;
-
-    // Посадка игрока в автомобиль (на водительское место)
-    setTimeout(() => {
-        player.putIntoVehicle(adminVeh, 0);
-    }, 150);
-
-    // Уведомление игрока
-    player.notify("~g~Заспавнено!");
+        // Уведомление игрока
+        player.notify("~g~Заспавнено!");
+    } catch (error) {
+        // Обработка ошибок при создании транспортного средства
+        player.outputChatBox(
+            "Ошибка: невозможно создать транспортное средство. Возможно, модель указана неправильно."
+        );
+        console.error("Ошибка при создании транспортного средства:", error);
+    }
 });
 
 //Команда удаления автомобиля которые я спавнил

@@ -18,6 +18,8 @@ mp.events.add("playerJoin", (player) => {
         player.customData = {};
     }
     player.customData.render_info_players = false; // По умолчанию рендеринг информации о игроках выключен
+    // При подключении игрока отправляем его ID на клиент
+    player.call("HUD_setPlayerId::CEF", [player.id]);
 });
 
 // Команда для переключения отображения информации о игроках
