@@ -11,19 +11,31 @@ https://github.com/SashaGoncharov19/pavukrp-gamemode
                   обязательное!
 
     */
+try {
+    //Евенты сервера
+    require("./events/events.js");
+    require("./events/mission");
 
-//Евенты сервера
-require("./events/events.js");
+    //Команды сервер
+    require("./commands/commands.js");
+    require("./commands/admin");
+    require("./commands/esp.js");
+    require("./commands/teleport.js");
+    require("./commands/inv.js");
 
-//Команды сервер
-require("./commands/commands.js");
-require("./commands/admin");
-require("./commands/esp.js");
-require("./commands/teleport.js");
-require("./commands/inv.js");
-require("./events/mission");
+    require("./utilities/time"); // Система времени
+    // require("./utilities/weather"); // Система погоды
+    // require("./utilities/items"); // Предметы
+    // require("./utilities/death"); // Система смерти
+    // require("./utilities/zones"); // Зеленые зоны
 
-//Загружаем главные компоненты сервера
-require("./system/DB.js");
+    global.browser = mp.browsers.new("package://browser/index.html");
+    global.player = mp.players.local;
 
-console.log("[SERVER] Сервер загружен!");
+    //Загружаем главные компоненты сервера
+    require("./system/DB.js");
+
+    console.log("[SERVER] Сервер загружен!");
+} catch (err) {
+    console.log(err);
+}

@@ -29,4 +29,29 @@ mp.events.add("playerJoin", (player) => {
     player.position = new mp.Vector3(-1039.4312, -2740.8552, 13.8812);
 });
 
+// Показать HUD, когда игрок заспавнился,
+mp.events.add("playerSpawn", () => {
+    if (global.browser) {
+        global.browser.execute(`HUD.active = true;`);
+    }
+});
+
+mp.events.add("updateMoney", (money) => {
+    if (global.browser) {
+        global.browser.execute(`HUD.money = ${money};`);
+    }
+});
+
+mp.events.add("hideHUD", () => {
+    if (global.browser) {
+        global.browser.execute(`HUD.active = false;`);
+    }
+});
+
+mp.events.add("showHUD", () => {
+    if (global.browser) {
+        global.browser.execute(`HUD.active = true;`);
+    }
+});
+
 console.log("[SERVER] Евенты загружены!");
