@@ -25,6 +25,9 @@ require("./events/lsc");
 require("./events/mission");
 require("./events/hud");
 
+// Централизованое управление интерфейсом
+require("./ui/uiManager");
+
 // Utils
 // require("./utils/3dCamera");
 // require("./systems/utils/snake");
